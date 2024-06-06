@@ -1,0 +1,14 @@
+Jun 05, 2024 8:59:06 PM org.apache.fop.events.LoggingEventListener processEvent
+INFO: An fo:table  (See position 29:-1) is wider than the available room in inline-progression-dimension. Adjusting end-indent based on overconstrained geometry rules (XSL 1.1, ch. 5.3.4)
+Jun 05, 2024 8:59:06 PM org.apache.fop.events.LoggingEventListener processEvent
+INFO: An fo:table  (See position 29:-1) is wider than the available room in inline-progression-dimension. Adjusting end-indent based on overconstrained geometry rules (XSL 1.1, ch. 5.3.4)
+Jun 05, 2024 8:59:06 PM org.apache.fop.events.LoggingEventListener processEvent
+WARNING: The contents of fo:block line 1 exceed the available area in the inline-progression direction by 4252 millipoints. (See position 1500:-1)
+Jun 05, 2024 8:59:06 PM org.apache.fop.events.LoggingEventListener processEvent
+WARNING: The contents of fo:block line 1 exceed the available area in the inline-progression direction by 6476 millipoints. (See position 2380:-1)
+Jun 05, 2024 8:59:07 PM org.apache.fop.events.LoggingEventListener processEvent
+INFO: Rendered page #1.
+Jun 05, 2024 8:59:07 PM org.apache.fop.events.LoggingEventListener processEvent
+INFO: Rendered page #2.
+Jun 05, 2024 8:59:07 PM org.apache.fop.events.LoggingEventListener processEvent
+INFO: Rendered page #3.
