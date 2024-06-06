@@ -15,7 +15,7 @@ source vars.sh
 # aux_functions.sh contiene las funciones auxiliares utilizadas (por ejemplo: remove_schema)
 source aux_functions.sh
 
-# Se elimina el archivo error.log si existiese
+# Se elimina el archivo error.log si existiese de una ejecución previa
 if [ -e error.log ]
 then
     rm error.log
@@ -41,6 +41,7 @@ check_type $type
 if [ $? -ne 0 ]
 then
     echo "¡Valor inválido! Por favor ingrese un valor entre 'sc', 'xf', 'cw', 'go' o 'mc'"
+    exit 3
 fi
 
 URL_Drivers="https://api.sportradar.com/nascar-ot3/${type}/${year}/drivers/list.xml?api_key=${SPORTRADAR_API}"
@@ -56,7 +57,7 @@ curl -o $drivers $URL_Drivers &> /dev/null
 if [ $? -ne 0 ]
 then
     echo "¡Error al descargar el archivo drivers_list.xml!"
-    exit 3
+    exit 4
 fi
 
 curl -o $standings $URL_Standings &> /dev/null
@@ -64,7 +65,7 @@ curl -o $standings $URL_Standings &> /dev/null
 if [ $? -ne 0 ]
 then
     echo "¡Error al descargar el archivo drivers_standings.xml!"
-    exit 4
+    exit 5
 fi
 
 remove_namespace $drivers $standings
