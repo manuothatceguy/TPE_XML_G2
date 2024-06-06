@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TRABAJO PRÁCTICO ESPECIAL - Diseño y procesamiento de archivos XML - Instituto Tecnológico de Buenos Aires
+# TRABAJO PRÁCTICO ESPECIAL - Diseño y procesamiento de documentos XML - Instituto Tecnológico de Buenos Aires
 # Autores: Alvarez, María Victoria; Nogueira, Santiago; Othatceguy, Manuel; Pepe, Santino
 # Fecha de entrega: 12/06/2024
 
