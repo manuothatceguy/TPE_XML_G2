@@ -16,14 +16,6 @@ then
     ERROR_CODE=1
 fi
 
-
-
-# Se elimina el archivo error.log si existiese de una ejecución previa
-if [ -e error.log ]
-then
-    rm error.log
-fi
-
 # Para mejorar la claridad del código, se define la variable year para guardar el valor de $1
 year=$1
 
@@ -68,6 +60,8 @@ then
         ERROR_CODE=4
     fi
 
+    # Se espera 2 segundos para no saturar el servidor y evitar errores del tipo "too many requests"
+    sleep 2
     curl -o $standings $URL_Standings &> /dev/null
 
     if [ $? -ne 0 ]
@@ -85,19 +79,37 @@ then
 
         java dom.Writer -v -n -s -f extract_nascar_data.xml > nascar_data.xml 
 
-        # Se borran los archivos temporales
-        rm nascar_page.fo extract_nascar_data.xml 
+        # Se borran los archivos temporales o de ejecuciones previas
+
+        if [ -e nascar_page.fo ]
+        then
+            rm nascar_page.fo
+        fi
+
+        if [ -e extract_nascar_data.xml ]
+        then
+            rm extract_nascar_data.xml
+        fi
+
+        if [ -d external ]
+        then
+            rm -rf external
+        fi
+
         mkdir external
         mv drivers_list.xml drivers_standings.xml external/
-    fi
     else
         # Se crea el archivo XML con los errores únicamente
         echo "<nascar_data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
        xsi:noNamespaceSchemaLocation=\"nascar_data.xsd\">$ERROR</nascar_data>" > nascar_data.xml
-
+    fi
+else
+    # Se crea el archivo XML con los errores únicamente
+    echo "<nascar_data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+       xsi:noNamespaceSchemaLocation=\"nascar_data.xsd\">$ERROR</nascar_data>" > nascar_data.xml
 fi
 # Se genera el archivo FO y se lo convierte a PDF, sea con o sin errores
 
-java net.sf.saxon.Transform -s:nascar_data.xml -xsl:generate_fo.xsl -o:nascar_page.fo 
+java net.sf.saxon.Transform -s:nascar_data.xml -xsl:generate_fo_alternativo.xsl -o:nascar_page.fo 
 
 ./fop/fop -fo nascar_page.fo -pdf nascar_report.pdf 

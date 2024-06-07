@@ -1,3 +1,7 @@
+declare namespace saxon="http://saxon.sf.net/";
+declare option saxon:output "indent=yes";
+
+(: Se importan los documentos XML necesarios para la consulta :)
 (: Se pasan los docs a variables para mayor claridad del código :)
 let $driversList := doc("drivers_list.xml")
 let $driversStandings := doc("drivers_standings.xml")
@@ -23,16 +27,16 @@ return <nascar_data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     then <car>{string($driversList//driver[@id = $driver/@id]/car[not(preceding-sibling::car)]/manufacturer/@name)}</car>
     else ()
     }
-    <statistics>
-    <season_points>{string($driver/@points)}</season_points>
-    <wins>{string($driver/@wins)}</wins>
-    <poles>{string($driver/@poles)}</poles>
-    <races_not_finished>{string($driver/@dnf)}</races_not_finished>
-    <laps_completed>{string($driver/@laps_completed)}</laps_completed>
-    </statistics>
-  </driver>
+      <statistics>
+        <season_points>{string($driver/@points)}</season_points>
+        <wins>{string($driver/@wins)}</wins>
+        <poles>{string($driver/@poles)}</poles>
+        <races_not_finished>{string($driver/@dnf)}</races_not_finished>
+        <laps_completed>{string($driver/@laps_completed)}</laps_completed>
+      </statistics>
+    </driver>
   }
-  </drivers>
+    </drivers>
   </nascar_data>
 
     
