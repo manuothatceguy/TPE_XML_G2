@@ -34,6 +34,7 @@ type=$2
 
 # Validar que $2 sea "sc", "xf", "cw", "go" o "mc"
 check_type $type
+
 if [ $? -ne 0 ]
 then
     echo "¡Valor inválido! Por favor ingrese un valor entre 'sc', 'xf', 'cw', 'go' o 'mc'"
@@ -60,7 +61,7 @@ then
         ERROR_CODE=4
     fi
 
-    # Se espera 2 segundos para no saturar el servidor y evitar errores del tipo "too many requests"
+    # Se espera 2 segundos para no saturar el servidor y evitar errores del tipo "too many requests", respetando la documentación de la API
     sleep 2
     curl -o $standings $URL_Standings &> /dev/null
 
@@ -80,21 +81,7 @@ then
         java dom.Writer -v -n -s -f extract_nascar_data.xml > nascar_data.xml 
 
         # Se borran los archivos temporales o de ejecuciones previas
-
-        if [ -e nascar_page.fo ]
-        then
-            rm nascar_page.fo
-        fi
-
-        if [ -e extract_nascar_data.xml ]
-        then
-            rm extract_nascar_data.xml
-        fi
-
-        if [ -d external ]
-        then
-            rm -rf external
-        fi
+        clean_prev
 
         mkdir external
         mv drivers_list.xml drivers_standings.xml external/
@@ -110,6 +97,6 @@ else
 fi
 # Se genera el archivo FO y se lo convierte a PDF, sea con o sin errores
 
-java net.sf.saxon.Transform -s:nascar_data.xml -xsl:generate_fo_alternativo.xsl -o:nascar_page.fo 
+java net.sf.saxon.Transform -s:nascar_data.xml -xsl:generate_fo_alternativo.xsl -o:nascar_page.fo
 
-./fop/fop -fo nascar_page.fo -pdf nascar_report.pdf 
+./fop/fop -fo nascar_page.fo -pdf nascar_report.pdf &> /dev/null

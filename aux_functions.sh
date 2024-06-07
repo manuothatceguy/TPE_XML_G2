@@ -27,3 +27,20 @@ function check_type(){
         return 0
     fi
 }
+
+function clean_prev(){
+    if [ -e nascar_page.fo ]
+    then
+        rm nascar_page.fo
+    fi
+
+    if [ -e extract_nascar_data.xml ]
+    then
+        rm extract_nascar_data.xml
+    fi
+
+    if [ -d external ]
+    then
+        rm -rf external
+    fi
+}
