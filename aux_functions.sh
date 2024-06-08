@@ -44,3 +44,33 @@ function clean_prev(){
         rm -rf external
     fi
 }
+
+function download_file(){
+    # Se descarga el archivo en la URL especificada
+    curl -s -o $1 $2 &> /dev/null
+    return $?
+}
+
+function call_xquery(){
+    # Se llama al parser XQuery para que haga su trabajo
+    java net.sf.saxon.Query $1 > $2 &> /dev/null
+    return $? 
+}
+
+function parse_xsd(){
+    # Se valida el archivo XML con el archivo XSD
+    java dom.Writer -v -n -s -f $1 > $2 &> /dev/null
+    return $?
+}
+
+function generate_fo(){
+    # Se genera el archivo FO
+    java net.sf.saxon.Transform -s:$1 -xsl:$2 -o:$3 &> /dev/null
+    return $?
+}
+
+function generate_pdf(){
+    # Se genera el PDF
+    ./fop/fop -fo $1 -pdf $2 &> /dev/null
+    return $?
+}
