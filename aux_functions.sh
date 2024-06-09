@@ -62,6 +62,7 @@ query(){
 }
 
 generate_pdf(){
+    chmod u+x ./fop/fop
     ./fop/fop -fo ${1} -pdf ${2} 
 }
 
