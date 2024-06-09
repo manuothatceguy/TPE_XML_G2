@@ -1,17 +1,16 @@
 #!/bin/bash
+# tpe.sh
 
 # TRABAJO PRÁCTICO ESPECIAL - Diseño y procesamiento de documentos XML - Instituto Tecnológico de Buenos Aires
 # Autores: Alvarez, María Victoria; Nogueira, Santiago; Othatceguy, Manuel; Pepe, Santino
 # Fecha de entrega: 12/06/2024
 
 ERROR=""
-ERROR_CODE=0
 
 if [ -z "$SPORTRADAR_API" ]
 then
     echo "¡Error! La clave de la API no está definida."
     ERROR="$ERROR<error>Clave de la API no definida</error>"
-    ERROR_CODE=1
 fi
 
 # aux_functions.sh contiene las funciones auxiliares utilizadas (por ejemplo: remove_schema)
@@ -21,7 +20,6 @@ if [ $# -ne 2 ]
 then
     echo "¡Cantidad de argumentos inválida! Por favor ingrese únicamente dos argumentos."
     ERROR="$ERROR<error>Cantidad de argumentos inválida</error>"
-    let ERROR_CODE=$ERROR_CODE+2
 fi
 
 # Para mejorar la claridad del código, se define la variable year para guardar el valor de $1
@@ -47,12 +45,9 @@ if [ $? -ne 0 ]
 then
     echo "¡Valor inválido! Por favor ingrese un valor entre 'sc', 'xf', 'cw', 'go' o 'mc'"
     ERROR="$ERROR<error>Tipo de carrera inválido</error>"
-    let ERROR_CODE=$ERROR_CODE+8
 fi
 
-
-
-if [ $ERROR_CODE -eq 0 ]
+if [ -z "$ERROR" ]
 then
     
     
@@ -68,7 +63,6 @@ then
     then
         echo "¡Error al descargar el archivo drivers_list.xml!"
         ERROR="$ERROR<error>Error al descargar el archivo drivers_list.xml</error>"
-        let ERROR_CODE=$ERROR_CODE+16
     fi
 
     sleep 2 # Respetando el "update frequency" de la API
@@ -79,10 +73,9 @@ then
     then
         echo "¡Error al descargar el archivo drivers_standings.xml!"
         ERROR="$ERROR<error>Error al descargar el archivo drivers_standings.xml</error>"
-        let ERROR_CODE=$ERROR_CODE+32
     fi
 
-    if [ $ERROR_CODE -eq 0 ] # Si no falló la descarga de archivos
+    if [ -z "$ERROR" ] # Si no falló la descarga de archivos
     then
         remove_namespace $drivers $standings
         # Se llama a los parsers para que hagan su trabajo, se asume que están correctamente instalados.

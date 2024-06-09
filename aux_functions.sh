@@ -1,4 +1,5 @@
 #!/bin/bash
+# aux_functions.sh
 
 function remove_namespace(){
     # Se eliminan las líneas que contienen el namespace de los archivos descargados
@@ -47,30 +48,25 @@ function clean_prev(){
 
 function download_file(){
     # Se descarga el archivo en la URL especificada
-    curl -s -o $1 $2 &> /dev/null
+    curl -o $1 $2 &> /dev/null
+    echo $?
     return $?
 }
 
 function call_xquery(){
     # Se llama al parser XQuery para que haga su trabajo
-    java net.sf.saxon.Query $1 > $2 &> /dev/null
+    java net.sf.saxon.Query $1 > $2 
     return $? 
-}
-
-function parse_xsd(){
-    # Se valida el archivo XML con el archivo XSD
-    java dom.Writer -v -n -s -f $1 > $2 &> /dev/null
-    return $?
 }
 
 function generate_fo(){
     # Se genera el archivo FO
-    java net.sf.saxon.Transform -s:$1 -xsl:$2 -o:$3 &> /dev/null
+    java net.sf.saxon.Transform -s:$1 -xsl:$2 -o:$3 
     return $?
 }
 
 function generate_pdf(){
     # Se genera el PDF
-    ./fop/fop -fo $1 -pdf $2 &> /dev/null
+    ./fop/fop -fo $1 -pdf $2 
     return $?
 }
