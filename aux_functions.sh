@@ -78,7 +78,7 @@ create_error_file(){
     # Se crea el archivo de error
     echo "<nascar_data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
        xsi:noNamespaceSchemaLocation=\"nascar_data.xsd\">${1}</nascar_data>" > nascar_data.xml
-    generate_fo "nascar_data.xml" "generate_fo_alternativo.xsl" "nascar_page.fo"
+    generate_fo "nascar_data.xml" "generate_fo.xsl" "nascar_page.fo"
     generate_pdf "nascar_page.fo" "nascar_report.pdf"
     exit 1
 }
