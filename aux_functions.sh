@@ -59,16 +59,19 @@ download_file(){
 query(){
     # Se ejecuta la consulta XQuery
     java net.sf.saxon.Query ${1} > ${2}
+    return $?
 }
 
 generate_pdf(){
     chmod u+x ./fop/fop
     ./fop/fop -fo ${1} -pdf ${2} &> /dev/null
+    return $?
 }
 
 generate_fo(){
     # Se genera el archivo .fo
     java net.sf.saxon.Transform -s:${1} -xsl:${2} -o:${3}
+    return $?
 }
 
 create_error_file(){
