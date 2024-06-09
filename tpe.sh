@@ -5,21 +5,21 @@
 # Autores: Alvarez, María Victoria; Nogueira, Santiago; Othatceguy, Manuel; Pepe, Santino
 # Fecha de entrega: 12/06/2024
 
-ERROR=""
+# aux_functions.sh contiene las funciones auxiliares utilizadas (por ejemplo: remove_schema)
+source aux_functions.sh
 
 if [ -z "$SPORTRADAR_API" ]
 then
     echo "¡Error! La clave de la API no está definida."
-    ERROR="$ERROR<error>API KEY not defined.</error>"
+    ERROR="<error>API KEY not defined.</error>"
+    create_error_file "$ERROR"
 fi
-
-# aux_functions.sh contiene las funciones auxiliares utilizadas (por ejemplo: remove_schema)
-source aux_functions.sh
 
 if [ $# -ne 2 ]
 then
     echo "¡Cantidad de argumentos inválida! Por favor ingrese únicamente dos argumentos."
-    ERROR="$ERROR<error>Invalid number of arguments.</error>"
+    ERROR="<error>Invalid number of arguments.</error>"
+    create_error_file ]"$ERROR"
 fi
 
 # Para mejorar la claridad del código, se define la variable year para guardar el valor de $1
@@ -31,8 +31,8 @@ check_range $year
 if [ $? -ne 0 ]
 then
     echo "¡Valor fuera de rango! Por favor ingrese un valor entre 2013 y 2024"
-    ERROR="$ERROR<error>Year out of range.</error>"
-    let ERROR_CODE=$ERROR_CODE+4
+    ERROR="<error>Year out of range.</error>"
+    create_error_file "$ERROR"
 fi
 
 # Misma razón de la definición de variable type que en la variable year
@@ -44,13 +44,12 @@ check_type $type
 if [ $? -ne 0 ]
 then
     echo "¡Valor inválido! Por favor ingrese un valor entre 'sc', 'xf', 'cw', 'go' o 'mc'"
-    ERROR="$ERROR<error>Invalid race type.</error>"
+    ERROR="<error>Invalid race type.</error>"
+    create_error_file "$ERROR"
 fi
 
 if [ -z "$ERROR" ]
 then
-    
-    
     URL_Drivers="https://api.sportradar.com/nascar-ot3/${type}/${year}/drivers/list.xml?api_key=${SPORTRADAR_API}"
     URL_Standings="https://api.sportradar.com/nascar-ot3/${type}/${year}/standings/drivers.xml?api_key=${SPORTRADAR_API}"
 
@@ -62,7 +61,8 @@ then
     if [ $? -ne 0 ]
     then
         echo "¡Error al descargar el archivo drivers_list.xml!"
-        ERROR="$ERROR<error>drivers_list.xml could not be downloaded</error>"
+        ERROR="<error>drivers_list.xml could not be downloaded</error>"
+        create_error_file $ERROR
     fi
 
     sleep 2 # Respetando el "update frequency" de la API
@@ -72,7 +72,8 @@ then
     if [ $? -ne 0 ]
     then
         echo "¡Error al descargar el archivo drivers_standings.xml!"
-        ERROR="$ERROR<error>drivers_standings.xml could not be downloaded</error>"
+        ERROR="<error>drivers_standings.xml could not be downloaded</error>"
+        create_error_file $ERROR
     fi
 fi
 
@@ -80,9 +81,8 @@ if [ -z "$ERROR" ] # Si no falló la descarga de archivos
     then
         remove_namespace $drivers $standings
         # Se llama a los parsers para que hagan su trabajo, se asume que están correctamente instalados.
-        
-        query "extract_nascar_data.xq" "extract_nascar_data.xml"
-        #java net.sf.saxon.Query extract_nascar_data.xq > extract_nascar_data.xml
+
+        query "extract_nascar_data4.xq" "extract_nascar_data.xml"
 
         java dom.Writer -v -n -s -f extract_nascar_data.xml > nascar_data.xml 
 
@@ -95,8 +95,7 @@ fi
 
 if [ -n "$ERROR" ]
 then
-    echo "<nascar_data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
-       xsi:noNamespaceSchemaLocation=\"nascar_data.xsd\">$ERROR</nascar_data>" > nascar_data.xml
+    create_error_file $ERROR
 fi
 
 # Se genera el archivo FO y se lo convierte a PDF, sea con o sin errores
