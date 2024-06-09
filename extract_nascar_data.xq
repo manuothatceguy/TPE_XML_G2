@@ -1,4 +1,3 @@
-declare namespace saxon="http://saxon.sf.net/";
 declare option saxon:output "indent=yes";
 
 (: Se importan los documentos XML necesarios para la consulta :)

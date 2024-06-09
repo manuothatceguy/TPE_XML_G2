@@ -27,7 +27,7 @@
                                     <xsl:value-of select="/nascar_data/year"/>
                                 </fo:inline>
                             </fo:block>
-                            <fo:table table-layout="fixed" width="102%">
+                            <fo:table table-layout="fixed" width="100%">
                                 <fo:table-column column-number="1" column-width="14%"/>
                                 <fo:table-column column-number="2" column-width="10%"/>
                                 <fo:table-column column-number="3" column-width="10%"/>
@@ -39,7 +39,7 @@
                                 <fo:table-column column-number="9" column-width="7%"/>
                                 <fo:table-column column-number="10" column-width="8%"/>
                                 <fo:table-column column-number="11" column-width="8%"/>
-                                <fo:table-header border-width="1pt" border-style="solid">
+                                <fo:table-body border-width="1pt" border-style="solid">
                                     <fo:table-row background-color="rgb(215,245,250)">
                                         <!-- C1-->
                                         <fo:table-cell>
@@ -88,8 +88,6 @@
                                             <fo:block font-size="8pt" text-align="center">Completed laps</fo:block>
                                         </fo:table-cell>
                                     </fo:table-row>
-                                </fo:table-header>
-                                <fo:table-body end-indent="0in">
                                     <xsl:for-each select="/nascar_data/drivers/driver">
                                         <fo:table-row>
                                             <fo:table-cell>

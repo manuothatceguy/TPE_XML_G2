@@ -10,7 +10,7 @@ ERROR=""
 if [ -z "$SPORTRADAR_API" ]
 then
     echo "¡Error! La clave de la API no está definida."
-    ERROR="$ERROR<error>Clave de la API no definida</error>"
+    ERROR="$ERROR<error>API KEY not defined.</error>"
 fi
 
 # aux_functions.sh contiene las funciones auxiliares utilizadas (por ejemplo: remove_schema)
@@ -19,7 +19,7 @@ source aux_functions.sh
 if [ $# -ne 2 ]
 then
     echo "¡Cantidad de argumentos inválida! Por favor ingrese únicamente dos argumentos."
-    ERROR="$ERROR<error>Cantidad de argumentos inválida</error>"
+    ERROR="$ERROR<error>Invalid number of arguments.</error>"
 fi
 
 # Para mejorar la claridad del código, se define la variable year para guardar el valor de $1
@@ -31,7 +31,7 @@ check_range $year
 if [ $? -ne 0 ]
 then
     echo "¡Valor fuera de rango! Por favor ingrese un valor entre 2013 y 2024"
-    ERROR="$ERROR<error>Año fuera de rango</error>"
+    ERROR="$ERROR<error>Year out of range.</error>"
     let ERROR_CODE=$ERROR_CODE+4
 fi
 
@@ -44,7 +44,7 @@ check_type $type
 if [ $? -ne 0 ]
 then
     echo "¡Valor inválido! Por favor ingrese un valor entre 'sc', 'xf', 'cw', 'go' o 'mc'"
-    ERROR="$ERROR<error>Tipo de carrera inválido</error>"
+    ERROR="$ERROR<error>Invalid race type.</error>"
 fi
 
 if [ -z "$ERROR" ]
@@ -62,7 +62,7 @@ then
     if [ $? -ne 0 ]
     then
         echo "¡Error al descargar el archivo drivers_list.xml!"
-        ERROR="$ERROR<error>Error al descargar el archivo drivers_list.xml</error>"
+        ERROR="$ERROR<error>drivers_list.xml could not be downloaded</error>"
     fi
 
     sleep 2 # Respetando el "update frequency" de la API
@@ -72,35 +72,37 @@ then
     if [ $? -ne 0 ]
     then
         echo "¡Error al descargar el archivo drivers_standings.xml!"
-        ERROR="$ERROR<error>Error al descargar el archivo drivers_standings.xml</error>"
+        ERROR="$ERROR<error>drivers_standings.xml could not be downloaded</error>"
     fi
+fi
 
-    if [ -z "$ERROR" ] # Si no falló la descarga de archivos
+if [ -z "$ERROR" ] # Si no falló la descarga de archivos
     then
         remove_namespace $drivers $standings
         # Se llama a los parsers para que hagan su trabajo, se asume que están correctamente instalados.
-        call_xquery "extract_nascar_data.xq" "extract_nascar_data.xml"
+        
+        query "extract_nascar_data.xq" "extract_nascar_data.xml"
+        #java net.sf.saxon.Query extract_nascar_data.xq > extract_nascar_data.xml
 
-        parse_xsd "extract_nascar_data.xml" "nascar_data.xml" 
+        java dom.Writer -v -n -s -f extract_nascar_data.xml > nascar_data.xml 
 
         # Se borran los archivos temporales o de ejecuciones previas
         clean_prev
 
         mkdir external
         mv drivers_list.xml drivers_standings.xml external/
-    else
-        # Se crea el archivo XML con los errores únicamente
-        echo "<nascar_data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
-       xsi:noNamespaceSchemaLocation=\"nascar_data.xsd\">$ERROR</nascar_data>" > nascar_data.xml
-    fi
-else
-    # Se crea el archivo XML con los errores únicamente
+fi
+
+if [ -n "$ERROR" ]
+then
     echo "<nascar_data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
        xsi:noNamespaceSchemaLocation=\"nascar_data.xsd\">$ERROR</nascar_data>" > nascar_data.xml
 fi
-# Se genera el archivo FO y se lo convierte a PDF, sea con o sin errores
 
+# Se genera el archivo FO y se lo convierte a PDF, sea con o sin errores
 generate_fo "nascar_data.xml" "generate_fo_alternativo.xsl" "nascar_page.fo"
 
+# Se genera el PDF con Apache FOP
 generate_pdf "nascar_page.fo" "nascar_report.pdf"
+
 
