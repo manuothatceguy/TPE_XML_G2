@@ -80,5 +80,5 @@ create_error_file(){
        xsi:noNamespaceSchemaLocation=\"nascar_data.xsd\">${1}</nascar_data>" > nascar_data.xml
     generate_fo "nascar_data.xml" "generate_fo.xsl" "nascar_page.fo"
     generate_pdf "nascar_page.fo" "nascar_report.pdf"
-    exit 1
+    exit ${2}
 }
